@@ -25,8 +25,8 @@ namespace FreeCam
 
         public override void OnApplicationStart()
         {
-            ClassInjector.RegisterTypeInIl2Cpp<Main>();
-            ClassInjector.RegisterTypeInIl2Cpp<CameraController>();
+            ClassInjector.RegisterTypeInIl2Cpp<Main2>();
+            ClassInjector.RegisterTypeInIl2Cpp<CameraController2>();
             Msg = LoggerInstance.Msg;
             Warning = LoggerInstance.Warning;
             Error = LoggerInstance.Error;
@@ -37,7 +37,7 @@ namespace FreeCam
             if (!Input.GetKeyDown(KeyCode.I) || IsRunning != null) return;
 
             IsRunning = new GameObject();
-            IsRunning.AddComponent<Main>();
+            IsRunning.AddComponent<Main2>();
             Object.DontDestroyOnLoad(IsRunning);
         }
     }

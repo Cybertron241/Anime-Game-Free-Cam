@@ -1,17 +1,17 @@
 ﻿using System;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
-using static FreeCam.Main;
+using static FreeCam.Main2;
 
 namespace FreeCam
 {
-    public class CameraController : MonoBehaviour
+    public class CameraController2 : MonoBehaviour
     {
-        public CameraController(IntPtr ptr) : base(ptr)
+        public CameraController2(IntPtr ptr) : base(ptr)
         {
         }
 
-        public CameraController() : base(ClassInjector.DerivedConstructorPointer<CameraController>())
+        public CameraController2() : base(ClassInjector.DerivedConstructorPointer<CameraController2>())
         {
             ClassInjector.DerivedConstructorBody(this);
         }

@@ -49,9 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CameraController.cs" />
+    <Compile Include="CameraController2.cs" />
     <Compile Include="Loader.cs" />
-    <Compile Include="Main.cs" />
+    <Compile Include="Main2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

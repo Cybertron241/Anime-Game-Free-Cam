@@ -8,13 +8,13 @@ using UnityEngine.UI;
 
 namespace FreeCam
 {
-    public class Main : MonoBehaviour
+    public class Main2 : MonoBehaviour
     {
-        public Main(IntPtr ptr) : base(ptr)
+        public Main2(IntPtr ptr) : base(ptr)
         {
         }
 
-        public Main() : base(ClassInjector.DerivedConstructorPointer<Main>())
+        public Main2() : base(ClassInjector.DerivedConstructorPointer<Main2>())
         {
             ClassInjector.DerivedConstructorBody(this);
         }
@@ -229,8 +229,8 @@ namespace FreeCam
                 if (NewcamObj == null)
                 {
                     NewcamObj = Instantiate(MaincamObj);
-                    if (NewcamObj.GetComponent<CameraController>() == null)
-                        NewcamObj.AddComponent<CameraController>();
+                    if (NewcamObj.GetComponent<CameraController2>() == null)
+                        NewcamObj.AddComponent<CameraController2>();
                 }
             }
 
