@@ -1,9 +1,9 @@
 ﻿using System;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
-using static QoL.Main;
+using static FreeCam.Main;
 
-namespace QoL
+namespace FreeCam
 {
     public class CameraController : MonoBehaviour
     {

@@ -4,7 +4,7 @@ using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace QoL
+namespace FreeCam
 {
     public static class BuildInfo
     {
@@ -25,10 +25,8 @@ namespace QoL
 
         public override void OnApplicationStart()
         {
-            ClassInjector.RegisterTypeInIl2Cpp<Cooldown>();
             ClassInjector.RegisterTypeInIl2Cpp<Main>();
             ClassInjector.RegisterTypeInIl2Cpp<CameraController>();
-            ClassInjector.RegisterTypeInIl2Cpp<LoadingScreen>();
             Msg = LoggerInstance.Msg;
             Warning = LoggerInstance.Warning;
             Error = LoggerInstance.Error;

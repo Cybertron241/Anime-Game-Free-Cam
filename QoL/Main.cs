@@ -6,7 +6,7 @@ using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace QoL
+namespace FreeCam
 {
     public class Main : MonoBehaviour
     {

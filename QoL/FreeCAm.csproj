@@ -50,8 +50,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CameraController.cs" />
-    <Compile Include="Cooldown.cs" />
-    <Compile Include="LoadingScreen.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
