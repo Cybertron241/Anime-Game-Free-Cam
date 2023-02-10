@@ -40,6 +40,8 @@ namespace FreeCam
         public static bool FPS;
         public static bool GiantCamera;
         public static bool FreeCam = false;
+        public static bool CutsceneCam = false;
+        
 
         public static GameObject ActiveAvatar;
         public static GameObject AvatarRoot;
@@ -58,6 +60,8 @@ namespace FreeCam
         public static GameObject MaincamObj;
         public static GameObject NewcamObj;
         public static GameObject CameraDupe;
+        public static GameObject CutsceneCamera;
+        public static Camera CutCam;
 
         public static GameObject CharModel;
         public static GameObject CharHead;
@@ -80,6 +84,8 @@ namespace FreeCam
         public static GUILayoutOption[] ButtonSize;
         public static GUILayoutOption[] ButtonSize2;
 
+        float offset = 0f;
+
         public static string UIDText = "Hello!";
 
         private static bool _isVisible = true;
@@ -100,11 +106,18 @@ namespace FreeCam
         float cameraSpeed = 1f;
         float FOV = 50f;
 
+        Vector3 forwardRelativeVerticalInput;
+        Vector3 rightReltativeHorizontalInput;
+        Vector3 cameraRelativeMovement;
+        Vector3 right;
+        Vector3 forward;
+        float playerHorizontalInput;
+        float playerVerticalInput;
+
         #endregion
 
         public void Start()
         {
-            SetFPS();
             MelonCoroutines.Start(FindElements());
         }
 
@@ -130,8 +143,10 @@ namespace FreeCam
                     GUILayout.Height(20)
                 };
                 FreeCam = GUILayout.Toggle(FreeCam, "Free Camera", new GUILayoutOption[0]);
+                CutsceneCam = GUILayout.Toggle(CutsceneCam, "Cutscene Camera", new GUILayoutOption[0]);
                 GUILayout.Label($"Camera Speed: {cameraSpeed:F1}", new GUILayoutOption[0]);
                 cameraSpeed = GUILayout.HorizontalSlider(cameraSpeed, 0.1f, 10f, new GUILayoutOption[0]);
+                cameraSpeed = float.Parse(GUILayout.TextField(cameraSpeed.ToString(), new GUILayoutOption[0]));
                 GUILayout.Label($"Camera Sensitivity: {setsensitivity:F1}", new GUILayoutOption[0]);
                 setsensitivity = GUILayout.HorizontalSlider(setsensitivity, 1f, 20f, new GUILayoutOption[0]);
                 GUILayout.Label($"Camera FOV: {FOV:F1}", new GUILayoutOption[0]);
@@ -152,7 +167,6 @@ namespace FreeCam
 
             UpdateInput();
             FindObjects();
-            CamComponents();
             FreeCameraMode();
 
             if (MaincamObj && NewcamObj && Maincam)
@@ -164,27 +178,27 @@ namespace FreeCam
 
         private void FreeCameraMode()
         {
-            if (CameraDupe != false)
-            {
                 if (FreeCam == true)
                 {
                     if (MaincamObj.active == true)
                     {
+                        if (CameraDupe == null && FreeCam == true)
+                            CameraDupe = Instantiate(MaincamObj);
                         CameraDupe.SetActive(true);
                         MaincamObj.SetActive(false);
                         if (CamDup == null)
                             CamDup = CameraDupe.GetComponent<Camera>();
                     }
 
-                    float playerVerticalInput = Input.GetAxis("Vertical");
-                    float playerHorizontalInput = Input.GetAxis("Horizontal");
-                    Vector3 forward = Camera.main.transform.forward;
-                    Vector3 right = Camera.main.transform.right;
+                    playerVerticalInput = Input.GetAxis("Vertical");
+                    playerHorizontalInput = Input.GetAxis("Horizontal");
+                    forward = Camera.main.transform.forward;
+                    right = Camera.main.transform.right;
 
-                    Vector3 forwardRelativeVerticalInput = playerVerticalInput * forward ;
-                    Vector3 rightReltativeHorizontalInput = playerHorizontalInput * right;
+                    forwardRelativeVerticalInput = playerVerticalInput * forward ;
+                    rightReltativeHorizontalInput = playerHorizontalInput * right;
 
-                    Vector3 cameraRelativeMovement = (forwardRelativeVerticalInput + rightReltativeHorizontalInput) * cameraSpeed;
+                    cameraRelativeMovement = (forwardRelativeVerticalInput + rightReltativeHorizontalInput) * cameraSpeed;
                     CameraDupe.transform.Translate(cameraRelativeMovement, Space.World);
                     rotationX -= Input.GetAxis("Mouse Y") * setsensitivity;
                     rotationY += Input.GetAxis("Mouse X") * setsensitivity;
@@ -202,6 +216,30 @@ namespace FreeCam
 
                     }
                 }
+            if(CutsceneCam == true)
+            {
+                if (CutCam == null)
+                    CutCam = CutsceneCamera.GetComponent<Camera>();
+
+                float playerVerticalInput = Input.GetAxis("Vertical");
+                float playerHorizontalInput = Input.GetAxis("Horizontal");
+                Vector3 forward = Camera.main.transform.forward;
+                Vector3 right = Camera.main.transform.right;
+
+                Vector3 forwardRelativeVerticalInput = playerVerticalInput * forward;
+                Vector3 rightReltativeHorizontalInput = playerHorizontalInput * right;
+
+                Vector3 cameraRelativeMovement = (forwardRelativeVerticalInput + rightReltativeHorizontalInput) * cameraSpeed;
+                CutsceneCamera.transform.Translate(cameraRelativeMovement, Space.World);
+                rotationX -= Input.GetAxis("Mouse Y") * setsensitivity;
+                rotationY += Input.GetAxis("Mouse X") * setsensitivity;
+                CutsceneCamera.transform.localEulerAngles = new Vector3(-rotationX+offset, rotationY, -rotationX);
+
+                CutCam.fieldOfView = FOV;
+            }
+            else
+            {
+                CutsceneCamera = null;
             }
         }
 
@@ -218,46 +256,6 @@ namespace FreeCam
         }
 
         #region MainFunctions
-
-        private static void CamComponents()
-        {
-            if (MaincamObj)
-            {
-                if (Maincam == null)
-                    Maincam = MaincamObj.GetComponent<Camera>();
-
-                if (NewcamObj == null)
-                {
-                    NewcamObj = Instantiate(MaincamObj);
-                    if (NewcamObj.GetComponent<CameraController2>() == null)
-                        NewcamObj.AddComponent<CameraController2>();
-                }
-            }
-
-            if (NewcamObj)
-            {
-                if (Newcam == null)
-                    Newcam = NewcamObj.GetComponent<Camera>();
-            }
-        }
-
-        public void EnableCustomCam()
-        {
-            if (!MaincamObj || !NewcamObj || !Maincam) return;
-
-            NewcamObj.SetActive(true);
-            MaincamObj.SetActive(false);
-            CamIsActive = true;
-        }
-
-        public void DisableCustomCam()
-        {
-            if (!MaincamObj || !NewcamObj) return;
-
-            NewcamObj.SetActive(false);
-            MaincamObj.SetActive(true);
-            CamIsActive = false;
-        }
 
         public void ToggleHUD()
         {
@@ -305,11 +303,6 @@ namespace FreeCam
             }
         }
 
-        private static void SetFPS()
-        {
-            Application.targetFrameRate = TargetFPS;
-        }
-
         #endregion
 
         #region HelperFunctions
@@ -352,8 +345,21 @@ namespace FreeCam
                 _chat = GameObject.Find("/Canvas/Pages/InLevelMainPage/GrpMainPage/Chat/Content");
             if (_minimap == null)
                 _minimap = GameObject.Find("/Canvas/Pages/InLevelMainPage/GrpMainPage/MapInfo/GrpMiniMap");
-            if (CameraDupe == null && FreeCam == true)
-                CameraDupe = Instantiate(MaincamObj);
+            if (CutsceneCam == true)
+            {
+                if (CutsceneCamera == null)
+                    if (GameObject.Find("UISceneRoot/CharacterSelectSceneNew(Clone)/Cam/") == null)
+                    {
+                        CutsceneCamera = GameObject.Find("StageRoot/LoginScene(Clone)/SceneObj/ModelCamera/LoginCamera(Clone)/");
+                        offset = 0f;
+                    }
+                    else
+                    {
+                        CutsceneCamera = GameObject.Find("UISceneRoot/CharacterSelectSceneNew(Clone)/Cam/");
+                        offset = 20f;
+                    }
+            }
+
 
             if (AvatarRoot)
             {

@@ -34,7 +34,7 @@ namespace FreeCam
 
         public override void OnUpdate()
         {
-            if (!Input.GetKeyDown(KeyCode.I) || IsRunning != null) return;
+            if ((!Input.GetKeyDown(KeyCode.I) || !Input.GetKey(KeyCode.LeftControl) || IsRunning != null)) return;
 
             IsRunning = new GameObject();
             IsRunning.AddComponent<Main2>();
